@@ -27,8 +27,7 @@ def parse_file(datafile):
 # find and return the min, max and average values for the COAST region
     # get data from the COAST col
     COAST_COL = 1
-    coast_data = [sheet.cell_value(r, COAST_COL) 
-                    for r in range(1, sheet.nrows)]
+    coast_data = sheet.col_values(colx=COAST_COL, start_rowx=1, end_rowx=None)
 
     minvalue = min(coast_data)
     maxvalue = max(coast_data)
@@ -36,13 +35,16 @@ def parse_file(datafile):
 # find and return the time value for the min and max entries
     # get data from the Hour_End col
     TIME_COL = 0
-    time_data = [sheet.cell_value(r, TIME_COL)
-                    for r in range(1, sheet.nrows)]
+    time_data = sheet.col_values(colx=TIME_COL, start_rowx=1, end_rowx=None)
 
+    maxtime = time_data[coast_data.index(maxvalue)]
+    mintime = time_data[coast_data.index(minvalue)]
+
+# format the output
     data = {
-            'maxtime': xlrd.xldate_as_tuple(time_data[coast_data.index(maxvalue)], workbook.datemode),
+            'maxtime': xlrd.xldate_as_tuple(maxtime, workbook.datemode),
             'maxvalue': round(maxvalue,10),
-            'mintime': xlrd.xldate_as_tuple(time_data[coast_data.index(minvalue)], workbook.datemode),
+            'mintime': xlrd.xldate_as_tuple(mintime, workbook.datemode),
             'minvalue': round(minvalue,10),
             'avgcoast': round(sum(coast_data)/len(coast_data),10)
     }
