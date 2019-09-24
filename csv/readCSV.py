@@ -8,6 +8,7 @@
 # You have to parse only the first 10 data lines in this exercise,
 # so the returned list should have 10 entries!
 import os
+import csv
 
 DATADIR = ""
 DATAFILE = "beatles-diskography.csv"
@@ -16,18 +17,13 @@ DATAFILE = "beatles-diskography.csv"
 def parse_file(datafile):
     data = []
     with open(datafile, "r") as f:
-        # get the headers from the first row in a list
-        headerStr = f.readline().rstrip() # get first row without trailing newline
-        headers = headerStr.split(',')  # transform into list
-        
-        # get a record in a dictionary with headers values for keys
-        for line in f:
-            record = line.rstrip().split(',')
-            data.append(dict(zip(headers,record)))
+        r = csv.DictReader(f) # returns OrderedDict
+        for line in r:
+            data.append(dict(line)) # convert to unordered dict to match the expected format
     return data
 
 def test():
-    # a simple test of your implemetation
+    # a simple test of your implementation
     datafile = os.path.join(DATADIR, DATAFILE)
     d = parse_file(datafile)
     firstline = {'Title': 'Please Please Me', 'UK Chart Position': '1', 'Label': 'Parlophone(UK)', 'Released': '22 March 1963', 'US Chart Position': '-', 'RIAA Certification': 'Platinum', 'BPI Certification': 'Gold'}
