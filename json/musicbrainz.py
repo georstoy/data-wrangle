@@ -55,38 +55,95 @@ def pretty_print(data, indent=4):
 
 
 def main():
-    """
-    Below is an example investigation to help you get started in your
-    exploration. Modify the function calls and indexing below to answer the
-    questions on the next quiz.
+    quiz = []
+    
+    #####################################################
+    question = 'How many bands named "First Aid Kit"'
+    #####################################################
+    artistName = "First Aid Kit"
+    results = query_by_name(ARTIST_URL, query_type["simple"], artistName)
+    
+    artistCount = 0
+    for artist in results["artists"]:
+        if artist["name"]==artistName:
+            artistCount += 1
+    
+    quiz.append({
+        question: str(artistCount)
+    })
 
-    HINT: Note how the output we get from the site is a multi-level JSON
-    document, so try making print statements to step through the structure one
-    level at a time or copy the output to a separate output file. Experimenting
-    and iteration will be key to understand the structure of the data!
-    """
+    ##########################################
+    question = 'Begin-area name for Queen?'
+    ##########################################
+    artistName = "Queen"
+    results = query_by_name(ARTIST_URL, query_type["releases"], artistName)
+    
+    artistCount = 0
+    artists = []
+    for someArtist in results['artists']:
+        if someArtist['name']==artistName and someArtist['area']['name']=='United Kingdom':
+            artist = someArtist
+            break
+    
+    quiz.append({
+        question: artist['begin-area']['name']
+    })
 
-    # Query for information in the database about bands named Nirvana
-    results = query_by_name(ARTIST_URL, query_type["simple"], "Nirvana")
-    pretty_print(results)
+    ##########################################
+    question = 'Spanish alias for Beatles?'
+    ##########################################
+    artistName = "The Beatles"
+    results = query_by_name(ARTIST_URL, query_type['aliases'], artistName)
 
-    # Isolate information from the 4th band returned (index 3)
-    print("\nARTIST:")
-    pretty_print(results["artists"][3])
+    artistCount = 0
+    artists = []
+    for someArtist in results['artists']:    
+        if someArtist['name']==artistName:
+            artists.append(someArtist)
+    
+    artist = artists[0]
+    for alias in artist['aliases']:
+        if alias['locale']=='es':
+            answer = alias['name']
+            break
 
-    # Query for releases from that band using the artist_id
-    artist_id = results["artists"][3]["id"]
-    artist_data = query_site(ARTIST_URL, query_type["releases"], artist_id)
-    releases = artist_data["releases"]
+    quiz.append({
+        question: answer
+    })
+    
+    ###########################################
+    question = 'Nirvana disambiguation?\n'
+    ###########################################
+    artistName = "Nirvana"
+    results = query_by_name(ARTIST_URL, query_type['atr'], artistName)
 
-    # Print information about releases from the selected band
-    print("\nONE RELEASE:")
-    pretty_print(releases[0], indent=2)
+    artistCount = 0
+    artists = []
+    for someArtist in results['artists']:    
+        if someArtist['name']==artistName and someArtist:
+            artists.append(someArtist)
+    
+    quiz.append({
+        question: artists[0]['disambiguation']
+    })
 
-    release_titles = [r["title"] for r in releases]
-    print("\nALL TITLES:")
-    for t in release_titles:
-        print(t)
+    ###########################################
+    question = 'When was "One Direction formed"?'
+    ###########################################
+    artistName = "One Direction"
+    results = query_by_name(ARTIST_URL, query_type['atr'], artistName)
 
+    artistCount = 0
+    artists = []
+    for someArtist in results['artists']:    
+        if someArtist['name']==artistName:
+            artists.append(someArtist)
+
+    quiz.append({
+        question: artists[0]['life-span']['begin']
+    })
+    
+    pretty_print(quiz)
+    
 if __name__ == '__main__':
     main()
