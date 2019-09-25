@@ -44,7 +44,23 @@ def article_overview(kind, period):
     titles = []
     urls =[]
     # YOUR CODE HERE
-
+    # labels: list of dictionaries, where the keys are the "section" values and
+    # values are the "title" values for each of the retrieved articles.
+    #tl = open('test_log','w+')
+    for article in data:
+        titles.append({article['section']: article['title']})
+    
+    #tl.write('\n'.join(str(title) for title in titles))
+    
+    # urls: list of URLs for all 'media' entries with "format": "Standard Thumbnail"
+    for article in data:
+        for entry in article['media']:
+            for meta in entry['media-metadata']:
+                if meta['format']=='Standard Thumbnail':
+                    urls.append(meta['url'])
+    
+    #tl.write('\n'.join(str(url) for url in urls))
+    
     return (titles, urls)
 
 
@@ -54,8 +70,8 @@ def query_site(url, target, offset):
     # NYTimes returns 20 articles per request, if you want the next 20
     # You have to provide the offset parameter
     if API_KEY["popular"] == "" or API_KEY["article"] == "":
-        print "You need to register for NYTimes Developer account to run this program."
-        print "See Intructor notes for information"
+        print("You need to register for NYTimes Developer account to run this program.")
+        print("See Intructor notes for information")
         return False
     params = {"api-key": API_KEY[target], "offset": offset}
     r = requests.get(url, params = params)
@@ -70,10 +86,10 @@ def get_popular(url, kind, days, section="all-sections", offset=0):
     # This function will construct the query according to the requirements of the site
     # and return the data, or print an error message if called incorrectly
     if days not in [1,7,30]:
-        print "Time period can be 1,7, 30 days only"
+        print("Time period can be 1,7, 30 days only")
         return False
     if kind not in ["viewed", "shared", "emailed"]:
-        print "kind can be only one of viewed/shared/emailed"
+        print("kind can be only one of viewed/shared/emailed")
         return False
 
     url += "most{0}/{1}/{2}.json".format(kind, section, days)
