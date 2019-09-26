@@ -21,10 +21,24 @@ import xml.etree.ElementTree as ET
 
 PATENTS = 'patent.data'
 
-def get_root(fname):
+def get_root(s):
 
-    tree = ET.parse(fname)
-    return tree.getroot()
+    root = ET.fromstring(s)
+    return root
 
-
-get_root(PATENTS)
+with open(PATENTS,'r') as p:
+    xmls = []
+    acc_xml = p.readline()
+    while True:
+        line = p.readline()
+        if line:
+            if line.startswith('<?xml'):
+                if acc_xml:
+                    xmls.append(acc_xml)
+                    acc_xml = line.strip()
+            else:
+                acc_xml += line.strip()
+        else:
+            break
+for xml in xmls:
+    get_root(xml)
