@@ -72,6 +72,7 @@ def audit_file(filename, fields):
                                     fieldtypes[header].update([type([])])
                             else:
                                 fieldtypes[header].update([type('')])
+            l.write(row['areaLand']+'\n')                    
     return fieldtypes
 
 
