@@ -17,7 +17,8 @@ def get_db(db_name):
     with open('mongo.yml') as f:
         credentials = yaml.load(f, Loader=yaml.FullLoader)
     try:
-        client = MongoClient('mongodb+srv://user:'+credentials['password']+'@testcluster-stbzj.mongodb.net/test?retryWrites=true&w=majority')
+        client = MongoClient('mongodb+srv://user:'+credentials['password']+
+            '@testcluster-stbzj.mongodb.net/test?retryWrites=true&w=majority')
         print('Successful connection!\n')
     except:
         print('Unsuccessful connection!\n')

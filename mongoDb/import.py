@@ -11,7 +11,7 @@ import datetime as dt
 from pymongo import MongoClient
 
 CONFIG_FILE = 'database.yml'
-COLLECTIONS = ['autos']
+COLLECTIONS = ['test']
 
 def read_config(file):
     with open(file, 'r') as cfg_file:
@@ -48,10 +48,11 @@ if __name__ == "__main__":
     l = open('import_log', 'a')
     cfg = read_config(CONFIG_FILE)
     db = get_db(cfg)
-
-    for coll_name, datafile in cfg['collections']:
-        if coll_name in COLLECTIONS:
-            data = read(datafile)
-            coll = db[coll_name]
-            announce('importing '+coll_name+' from '+datafile+'\n')
-            coll.insert(data)
+    for coll_name in COLLECTIONS:
+        for record in cfg['collections']:
+            if coll_name in record.keys():
+                source_file = record[coll_name]
+                data = read(source_file)
+                coll = db[coll_name]
+                announce('importing '+coll_name+' from '+source_file+'\n')
+                coll.insert(data)

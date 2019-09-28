@@ -4,4 +4,4 @@ user:
 password:
 dbname:
 collections:
-  - autos: autos.csv
+  - autos: test.csv
