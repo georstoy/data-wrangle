@@ -1,0 +1,7 @@
+uri: mongodb+srv://<user>:<password>@<cluster>-stbzj.mongodb.net/test?retryWrites=true&w=majority
+cluster:
+user:
+password:
+dbname:
+collections:
+  - autos: autos.csv
