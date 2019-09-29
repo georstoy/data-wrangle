@@ -68,7 +68,6 @@ def process_file(filename, fields):
 
     process_fields = fields.keys()
     data = []
-    plog = open('processing_log', 'w')
     with open(filename, "r") as f:
         reader = csv.DictReader(f)
         for i in range(3):
@@ -76,32 +75,41 @@ def process_file(filename, fields):
 
         for line in reader:
             # YOUR CODE HERE
-            '''
-            TODO move 'family', 'class', 'phylum', 'order': 'Spider', 'kingdom', 'genus'
-                to 'classification'
-            '''
             record = {}
+            clas = {}
             for fname in FIELDS:
+                fval = line[fname]
                 if fname=='rdf-schema#label':
                     comments = re.compile('\(.*\)')
-                    val = re.sub(comments, '', line[fname])
+                    val = re.sub(comments, '', fval)
                     val = val.strip()
                 elif fname=='name':
                     nonalnum = re.compile('[^\w\s]')
-                    if line[fname]=='NULL' or re.match(nonalnum, line[fname]):
+                    if fval=='NULL' or re.match(nonalnum, fval):
                         val = line['rdf-schema#label']
                     else:
                         val = line[fname]
-                elif line[fname]=='NULL':
+                elif fval=='NULL':
                     val = None
                 elif fname=='synonym':
-                    val = line[fname].strip('{').strip('}').strip().split('|')
+                    val = []
+                    if fval.startswith('{') and '|' in fval:
+                        val = fval.strip('{').strip('}').split('|')
+                    else:
+                        val.append(fval)
+                    for syn in val:
+                        syn = syn.strip()       
                 else:
                     val = line[fname].strip()
                 
-                record[FIELDS[fname]] = val
+                if fname in ['rdf-schema#label', 'URI', 'rdf-schema#comment', 'name', 'synonym']:
+                    record[FIELDS[fname]] = val
+                else:
+                    clas[FIELDS[fname]] = val
+
+            record['classification']=clas
             data.append(record)
-            plog.write(str(record))
+            
     return data
 
 
