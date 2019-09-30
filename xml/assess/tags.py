@@ -38,7 +38,7 @@ def key_type(element, keys):
             keys['lower'] += 1
         elif re.match(lower_colon, element.attrib['k']):
             keys['lower_colon'] += 1
-        elif re.match(problemchars, element.attrib['k']):
+        elif re.search(problemchars, element.attrib['k']):
             keys['problemchars'] += 1
         else:
             print('^')
